@@ -1,49 +1,68 @@
+/*
+ *  Copyright 2019 Deep Dive Coding/CNM Ingenuity
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package edu.cnm.deepdive.model;
 
-import java.util.Objects;
+/**
+ * Encapsulates the suits of standard playing cards. This {@code enum} includes {@link #symbol()}
+ * and {@link #color()} methods, to return the Unicode symbol and {@link Color} {@code enum} value
+ * of any suit.
+ *
+ * @author Nicholas Bennett &amp; Deep Dive Coding Java + Android Cohort 9.
+ */
+public enum Suit {
 
-public class Card {
+  CLUBS,
+  DIAMONDS,
+  HEARTS,
+  SPADES;
 
-  private final Suit suit;
-  private final Rank rank;
-  private final int hash;
+  private static final String[] symbols = {"\u2663", "\u2662", "\u2661", "\u2660"};
+  private static final Color[] colors = {Color.BLACK, Color.RED, Color.RED, Color.BLACK};
 
-  public Card(Suit suit, Rank rank) {
-    this.suit = suit;
-    this.rank = rank;
-    hash = Objects.hash(suit, rank);
+  /**
+   * Returns the Unicode playing card symbol for this suit. This will be one of \u2663, \u2662,
+   * \u2661, and \u2660.
+   *
+   * <p>See <a href="https://en.wikipedia.org/wiki/Playing_cards_in_Unicode">Playing cards in
+   * Unicode</a> for details.</p>
+   *
+   * @return Unicode suit symbol.
+   */
+  public String symbol() {
+    return symbols[ordinal()];
   }
 
-  public Suit getSuit() {
-    return suit;
+  /**
+   * Returns the {@link Color} {@code enum} value for this suit.
+   *
+   * @return {@link Color#RED} or {@link Color#BLACK}.
+   */
+  public Color color() {
+    return colors[ordinal()];
   }
 
-  public Rank getRank() {
-    return rank;
-  }
-
-  @Override
-  public String toString() {
-    return rank.symbol() + suit.symbol();
-  }
-
-  @Override
-  public int hashCode() {
-    return hash;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    boolean comparison = false;
-    if (obj == this) {
-      comparison = true;
-    } else if (obj instanceof Card && obj.hashCode() == hash) {
-      Card other = (Card) obj;
-      if (hash == other.hash && suit == other.suit && rank == other.rank) {
-        comparison = true;
-      }
-      }
-    return comparison;
+  /**
+   * Encapsulates the two possible colors ({@link #RED} &amp; {@link #BLACK}) of standard playing
+   * card suits.
+   */
+  public enum Color {
+    /** Color of {@link #DIAMONDS} and {@link #HEARTS}. */
+    RED,
+    /** Color of {@link #CLUBS} and {@link #SPADES}. */
+    BLACK
   }
 
 }

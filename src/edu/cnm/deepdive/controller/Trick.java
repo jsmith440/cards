@@ -1,68 +1,88 @@
-package edu.cnm.deepdive.controller;
+/*
+ *  Copyright 2019 Deep Dive Coding/CNM Ingenuity
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package edu.cnm.deepdive.model;
 
-import edu.cnm.deepdive.model.Card;
-import edu.cnm.deepdive.model.Deck;
-import edu.cnm.deepdive.model.Suit.Color;
-import java.security.SecureRandom;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 
-public class Trick {
+/**
+ * Encapsulates a single playing card as a combination of {@link Suit} and {@link Rank}. Instances
+ * of this class are immutable.
+ *
+ * @author Nicholas Bennett &amp; Deep Dive Coding Java + Android Cohort 9.
+ */
+public class Card {
 
-  private Deck deck;
-  private List<Card> redPile;
-  private List<Card> blackPile;
-  private Random rng = new SecureRandom();
+  private final Suit suit;
+  private final Rank rank;
+  private final int hash;
 
-  public static void main(String[] args) {
-    Trick trick = new Trick();
-    trick.prepare();
-    trick.split();
-    trick.swap();
-    trick.report();
+  /**
+   * Initializes this {@code Card} instance with the specified {@link Suit} and {@link Rank}.
+   *
+   * @param suit {@link Suit} value of card.
+   * @param rank {@link Rank} value of card.
+   */
+  public Card(Suit suit, Rank rank) {
+    this.suit = suit;
+    this.rank = rank;
+    hash = Objects.hash(suit, rank);
   }
 
-  private void prepare() {
-    deck = new Deck();
-    deck.shuffle(rng);
+  /**
+   * Returns {@link Suit} of this {@code Card} instance.
+   */
+  public Suit getSuit() {
+    return suit;
   }
 
-  private void split() {
-    redPile = new LinkedList<>();
-    blackPile = new LinkedList<>();
-    for (Card selector = deck.deal(); selector != null; selector = deck.deal()) {
-      if (selector.getSuit().color() == Color.BLACK) {
-        blackPile.add(deck.deal());
-      } else {
-        redPile.add(deck.deal());
+  /**
+   * Returns {@link Rank} of this {@code Card} instance.
+   */
+  public Rank getRank() {
+    return rank;
+  }
+
+  /**
+   * Concatenates and returns the values returned by {@link #getRank()}{@link Rank#symbol()
+   * symbol()} and {@link #getSuit()}{@link Suit#symbol() symbol()}.
+   *
+   * @return concatenated {@link Rank} &amp; {@link Suit} symbols.
+   */
+  @Override
+  public String toString() {
+    return rank.symbol() + suit.symbol();
+  }
+
+  @Override
+  public int hashCode() {
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    boolean comparison = false;
+    if (obj == this) {
+      comparison = true;
+    } else if (obj instanceof Card) {
+      Card other = (Card) obj;
+      if (hash == other.hash && suit == other.suit && rank == other.rank) {
+        comparison = true;
       }
     }
-  }
-
-  private void swap() {
-    int swapSize = rng.nextInt(1 + Math.min(blackPile.size(), redPile.size()));
-    for (int i = 0; i < swapSize; i++) {
-      redPile.add(blackPile.remove(0));
-      blackPile.add(redPile.remove(0));
-    }
-  }
-
-  private void report() {
-    int redCount = 0;
-    int blackCount = 0;
-    for (Card c : redPile) {
-      if (c.getSuit().color() == Color.RED) {
-        redCount++;
-      }
-    }
-    for (Card c : blackPile) {
-      if (c.getSuit().color() == Color.BLACK) {
-        blackCount++;
-      }
-    }
-    System.out.printf("Red pile: %s. Red count: %d.%n", redPile, redCount);
-    System.out.printf("Black pile: %s. Black count: %d.%n", blackPile, blackCount);
+    return comparison;
   }
 
 }
