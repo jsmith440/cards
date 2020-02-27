@@ -15,54 +15,74 @@
  */
 package edu.cnm.deepdive.model;
 
+import java.util.Objects;
+
 /**
- * Encapsulates the suits of standard playing cards. This {@code enum} includes {@link #symbol()}
- * and {@link #color()} methods, to return the Unicode symbol and {@link Color} {@code enum} value
- * of any suit.
+ * Encapsulates a single playing card as a combination of {@link Suit} and {@link Rank}. Instances
+ * of this class are immutable.
  *
  * @author Nicholas Bennett &amp; Deep Dive Coding Java + Android Cohort 9.
  */
-public enum Suit {
+public class Card {
 
-  CLUBS,
-  DIAMONDS,
-  HEARTS,
-  SPADES;
-
-  private static final String[] symbols = {"\u2663", "\u2662", "\u2661", "\u2660"};
-  private static final Color[] colors = {Color.BLACK, Color.RED, Color.RED, Color.BLACK};
+  private final Suit suit;
+  private final Rank rank;
+  private final int hash;
 
   /**
-   * Returns the Unicode playing card symbol for this suit. This will be one of \u2663, \u2662,
-   * \u2661, and \u2660.
+   * Initializes this {@code Card} instance with the specified {@link Suit} and {@link Rank}.
    *
-   * <p>See <a href="https://en.wikipedia.org/wiki/Playing_cards_in_Unicode">Playing cards in
-   * Unicode</a> for details.</p>
-   *
-   * @return Unicode suit symbol.
+   * @param suit {@link Suit} value of card.
+   * @param rank {@link Rank} value of card.
    */
-  public String symbol() {
-    return symbols[ordinal()];
+  public Card(Suit suit, Rank rank) {
+    this.suit = suit;
+    this.rank = rank;
+    hash = Objects.hash(suit, rank);
   }
 
   /**
-   * Returns the {@link Color} {@code enum} value for this suit.
-   *
-   * @return {@link Color#RED} or {@link Color#BLACK}.
+   * Returns {@link Suit} of this {@code Card} instance.
    */
-  public Color color() {
-    return colors[ordinal()];
+  public Suit getSuit() {
+    return suit;
   }
 
   /**
-   * Encapsulates the two possible colors ({@link #RED} &amp; {@link #BLACK}) of standard playing
-   * card suits.
+   * Returns {@link Rank} of this {@code Card} instance.
    */
-  public enum Color {
-    /** Color of {@link #DIAMONDS} and {@link #HEARTS}. */
-    RED,
-    /** Color of {@link #CLUBS} and {@link #SPADES}. */
-    BLACK
+  public Rank getRank() {
+    return rank;
+  }
+
+  /**
+   * Concatenates and returns the values returned by {@link #getRank()}{@link Rank#symbol()
+   * symbol()} and {@link #getSuit()}{@link Suit#symbol() symbol()}.
+   *
+   * @return concatenated {@link Rank} &amp; {@link Suit} symbols.
+   */
+  @Override
+  public String toString() {
+    return rank.symbol() + suit.symbol();
+  }
+
+  @Override
+  public int hashCode() {
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    boolean comparison = false;
+    if (obj == this) {
+      comparison = true;
+    } else if (obj instanceof Card) {
+      Card other = (Card) obj;
+      if (hash == other.hash && suit == other.suit && rank == other.rank) {
+        comparison = true;
+      }
+    }
+    return comparison;
   }
 
 }
