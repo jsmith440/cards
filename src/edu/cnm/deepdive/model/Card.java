@@ -15,6 +15,7 @@
  */
 package edu.cnm.deepdive.model;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -87,11 +88,7 @@ public class Card implements Comparable<Card> {
 
   @Override
   public int compareTo(Card other) {
-    int result = getSuit().compareTo(other.getSuit());
-    if (result == 0) {
-      result = getRank().compareTo(other.getRank());
-    }
-    return result;
+    return Comparator.comparing(Card::getSuit).thenComparing(Card::getRank).compare(this, other);
   }
 
 }
